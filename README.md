@@ -33,7 +33,7 @@ https://github.com/user-attachments/assets/c83044c5-775a-45ca-9257-517f071710f7
 1. **Extract the release files:**
 
     ```bash
-    unzip SysX-linux.zip && cd SysX
+    unzip SysX-Trial.tar.gz && cd SysX
     ```
 
 2. **Run the server:**
