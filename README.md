@@ -18,6 +18,10 @@
 
 ---
 
+## Download from Release - [SysX-Trial](https://github.com/malwarekid/SysX-Trial/releases)
+
+---
+
 ## Demo
 
 https://github.com/user-attachments/assets/c83044c5-775a-45ca-9257-517f071710f7
