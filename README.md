@@ -39,13 +39,13 @@ https://github.com/user-attachments/assets/c83044c5-775a-45ca-9257-517f071710f7
 2. **Run the server:**
 
     ```bash
-    ./server
+    ./sysx
     ```
 
 3. **Run the client (on target system):**
 
     ```bash
-    ./client
+    ./agent
     ```
 
     > You can copy the client binary to any Linux machine in the same network.
