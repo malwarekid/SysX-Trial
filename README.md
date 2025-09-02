@@ -154,7 +154,7 @@ Follow:
 
 * 🐙 [Author](https://github.com/malwarekid)
 * 📷 [Instagram](https://instagram.com/malwarekid)
-* 📧 [Linkedin](https://github.com/malwarekid)
+* 📧 [Linkedin](https://www.linkedin.com/in/-nitinsharma/)
 
 ---
 
