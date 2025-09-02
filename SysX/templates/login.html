@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Bar */
+    .header {
+      background-color: #1e1e1e;
+      border-top: 4px solid #3a6ea5;
+      padding: 15px 20px;
+      font-size: 18px;
+      font-weight: 400;
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Center form */
+    .content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    form {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #ffffff;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    input {
+      background: #2a2a2a;
+      color: #ffffff;
+      border: 1px solid #3a3a3a;
+    }
+
+    input::placeholder {
+      color: #b0b0b0;
+    }
+
+    button {
+      background: #3a6ea5;
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #2f5a87;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      background: #1e1e1e;
+      color: #b0b0b0;
+      font-size: 12px;
+      text-align: center;
+      padding: 10px 0;
+      border-top: 1px solid #2e2e2e;
+    }
+    footer a {
+      color: #3a6ea5;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    
+    ::selection {
+      background: #3a6ea5;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">SysX – Access. Execute. Monitor.</div>
+  <div class="content">
+    <form method="POST">
+      <h2>Login</h2>
+      <input name="username" placeholder="Username" required>
+      <input name="password" type="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+<footer>
+  Created by <a href="https://github.com/malwarekid" target="_blank">malwarekid</a>
+</footer>
+</body>
+</html>

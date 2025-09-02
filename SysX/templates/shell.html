@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SysX — Remote Shell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+      margin: 0;
+      padding-bottom: 60px;
+    }
+
+    /* Header */
+    header {
+      background-color: #1e1e1e;
+      border-top: 4px solid #3a6ea5;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    .back {
+      background: #6c757d;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 13px;
+      transition: background 0.3s ease;
+    }
+    .back:hover {
+      background: #5a6268;
+    }
+
+    /* Page Title */
+    h2 {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 500;
+      margin: 20px 0;
+      color: #fff;
+    }
+
+    /* Command Form */
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 10px auto;
+      width: 90%;
+      max-width: 600px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 8px;
+      background: #1e1e1e;
+      color: #fff;
+      border: 1px solid #2e2e2e;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    input[type="text"]::placeholder {
+      color: #b0b0b0;
+    }
+    button {
+      padding: 8px 16px;
+      background: #3a6ea5;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #2f5a87;
+    }
+    .clearbtn {
+      background: #d9534f;
+    }
+    .clearbtn:hover {
+      background: #c9302c;
+    }
+
+    /* Output Box */
+    h3 {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 25px;
+      font-weight: 500;
+      color: #b0b0b0;
+    }
+    pre {
+      background: #1e1e1e;
+      border: 1px solid #2e2e2e;
+      border-radius: 4px;
+      padding: 12px;
+      width: 90%;
+      max-width: 800px;
+      margin: 15px auto;
+      height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 13px;
+    }
+
+    /* Footer */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #1e1e1e;
+      color: #b0b0b0;
+      font-size: 12px;
+      text-align: center;
+      padding: 8px 0;
+      border-top: 1px solid #2e2e2e;
+    }
+    footer a {
+      color: #3a6ea5;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    ::selection {
+      background: #3a6ea5;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">SysX — Remote Shell</div>
+    <a href="/" class="back">← Back</a>
+  </header>
+
+  <h2>Remote Shell — {{.ClientID}}</h2>
+
+  <form method="POST">
+    <input name="command" type="text" placeholder=">> Enter command..." />
+    <button type="submit">Execute</button>
+  </form>
+
+  <h3>Output:</h3>
+  <pre>{{.History}}</pre>
+
+  <form method="POST" style="text-align:center;">
+    <input type="hidden" name="clear" value="1">
+    <button type="submit" class="clearbtn">Clear History</button>
+  </form>
+
+  <footer>
+    Created by <a href="https://github.com/malwarekid" target="_blank">malwarekid</a>
+  </footer>
+</body>
+</html>

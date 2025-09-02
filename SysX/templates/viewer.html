@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SysX — Screen Monitoring</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+      margin: 0;
+      padding-bottom: 60px;
+    }
+
+    /* Header */
+    header {
+      background-color: #1e1e1e;
+      border-top: 4px solid #3a6ea5;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    .back {
+      background: #6c757d;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 13px;
+      transition: background 0.3s ease;
+    }
+    .back:hover {
+      background: #5a6268;
+    }
+
+    /* Heading */
+    h2 {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 500;
+      margin: 20px 0;
+      color: #fff;
+    }
+
+    /* Stream */
+    .stream-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .stream-container img {
+      max-width: 95vw;
+      border: 2px solid #3a6ea5;
+      border-radius: 6px;
+    }
+
+    /* Log Output (if needed) */
+    pre {
+      background: #1e1e1e;
+      border: 1px solid #2e2e2e;
+      border-radius: 6px;
+      padding: 15px;
+      width: 90%;
+      max-width: 800px;
+      margin: 20px auto;
+      height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 13px;
+    }
+
+    /* Footer */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #1e1e1e;
+      color: #b0b0b0;
+      font-size: 12px;
+      text-align: center;
+      padding: 8px 0;
+      border-top: 1px solid #2e2e2e;
+    }
+    footer a {
+      color: #3a6ea5;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    ::selection {
+      background: #3a6ea5;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">SysX — Monitoring</div>
+    <a href="/" class="back">← Back</a>
+  </header>
+
+  <h2>Screen Monitoring</h2>
+
+  <div class="stream-container">
+    <img src="/stream?client={{.}}" alt="Live Screen Stream" />
+  </div>
+
+  <footer>
+    Created by <a href="https://github.com/malwarekid" target="_blank">malwarekid</a>
+  </footer>
+</body>
+</html>

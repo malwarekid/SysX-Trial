@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SysX — Process Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+      margin: 0;
+      padding-bottom: 60px;
+    }
+
+    /* Header */
+    header {
+      background-color: #1e1e1e;
+      border-top: 4px solid #3a6ea5;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    .back {
+      background: #6c757d;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 13px;
+      transition: background 0.3s ease;
+    }
+    .back:hover { background: #5a6268; }
+
+    /* Heading */
+    h2 {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 500;
+      margin: 20px 0 10px 0;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 0 auto 20px;
+      flex-wrap: wrap;
+      max-width: 1000px;
+    }
+    .refresh-btn {
+      background: #3a6ea5;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: none;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .refresh-btn:hover { background: #2f5a87; }
+
+    /* Search Bar */
+    .search-input {
+      padding: 6px 10px;
+      font-size: 13px;
+      border: 1px solid #2e2e2e;
+      border-radius: 4px;
+      background: #1e1e1e;
+      color: #fff;
+      width: 200px;
+    }
+    .search-input::placeholder {
+      color: #b0b0b0;
+    }
+
+    /* Table */
+    table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 1000px;
+      font-size: 13px;
+      background: #1e1e1e;
+      border: 1px solid #2e2e2e;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #2e2e2e;
+      text-align: left;
+    }
+    th {
+      background: #2a2a2a;
+      font-weight: 500;
+    }
+    td { color: #fff; }
+    .kill-btn {
+      background: #d9534f;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .kill-btn:hover { background: #c9302c; }
+
+    /* Footer */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #1e1e1e;
+      color: #b0b0b0;
+      font-size: 12px;
+      text-align: center;
+      padding: 8px 0;
+      border-top: 1px solid #2e2e2e;
+    }
+    footer a {
+      color: #3a6ea5;
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title">SysX — Process Manager</div>
+    <a href="/" class="back">← Back</a>
+  </header>
+
+  <h2>Running Processes on {{.ClientID}}</h2>
+
+  <div class="controls">
+    <form method="POST" style="margin:0;">
+      <input type="hidden" name="action" value="refresh">
+      <button class="refresh-btn" type="submit">⟳ Refresh</button>
+    </form>
+    <input type="text" class="search-input" id="processSearch" placeholder="Search processes...">
+  </div>
+
+  <table id="processTable">
+    <thead>
+      <tr>
+        <th>PID</th>
+        <th>Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="processBody">
+      {{range .Processes}}
+      <tr>
+        <td>{{.PID}}</td>
+        <td>{{.Name}}</td>
+        <td>
+          <form method="POST" style="margin: 0;">
+            <input type="hidden" name="action" value="kill">
+            <input type="hidden" name="pid" value="{{.PID}}">
+            <button type="submit" class="kill-btn">Kill</button>
+          </form>
+        </td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+
+  <footer>
+    Created by <a href="https://github.com/malwarekid" target="_blank">malwarekid</a>
+  </footer>
+
+  <script>
+    // Search filter for processes
+    const searchInput = document.getElementById('processSearch');
+    function filterProcesses() {
+      const filter = searchInput.value.toLowerCase();
+      const rows = document.querySelectorAll('#processBody tr');
+      rows.forEach(row => {
+        const pid = row.cells[0].textContent.toLowerCase();
+        const name = row.cells[1].textContent.toLowerCase();
+        row.style.display = (pid.includes(filter) || name.includes(filter)) ? '' : 'none';
+      });
+    }
+    searchInput.addEventListener('keyup', filterProcesses);
+
+    // Silent auto-refresh every 5 seconds
+    setInterval(() => {
+      const clientID = "{{.ClientID}}";
+      fetch(`/processes/data?client=${clientID}`)
+        .then(res => res.text())
+        .then(html => {
+          document.querySelector('#processBody').innerHTML = html;
+          filterProcesses(); // Keep search filter applied
+        })
+        .catch(err => console.error('Auto-refresh failed:', err));
+    }, 5000);
+  </script>
+
+</body>
+</html>
